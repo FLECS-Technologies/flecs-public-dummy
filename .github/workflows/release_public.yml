@@ -23,6 +23,11 @@ on:
       private_key:
         required: true
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Fake build job
+       run: echo "This is just a test for public dummy"
   create_release:
     runs-on: ubuntu-latest
     steps:
