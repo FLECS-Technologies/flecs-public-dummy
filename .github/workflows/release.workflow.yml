@@ -1,92 +1,17 @@
 name: Release
 on:
-  workflow_call:
-    inputs:
-      env_public_version:
-        required: true
-        type: string
-      env_public_branch:
-        required: false
-        type: string
-        default: main
-      should_fail:
-        description: simulate failure of workflow
-        required: false
-        type: string
-      should_timeout:
-        description: simulation timeout of workflow
-        required: false
-        type: string
-    secrets:
-      app_id:
-        required: true
-      private_key:
-        required: true
+  workflow_dispatch:
+  release:
+    types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
      - name: Fake build job
        run: echo "This is just a test for public dummy"
-  create_release:
+  build_and_special:
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Create GitHub App installation access token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.app_id }}
-          private-key: ${{ secrets.private_key }}
-          owner: FLECS-Technologies
-          repositories: flecs-public-dummy
-      - name: Create public release
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/{owner}/{app}/releases
-          owner: FLECS-Technologies
-          app: flecs-public-dummy
-          data: >
-            {
-              "tag_name": "${{ inputs.env_public_version }}",
-              "target_commitish": ${{ inputs.env_public_branch }},
-              "name":"${{ inputs.env_public_version }}",
-              "body":"Automated dummy release",
-              "draft": false,
-              "prerelease": false,
-              "message": "automated tag creation",
-              "generate_release_notes":true,
-            }
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-      - name: Check public release
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          OWNER: FLECS-Technologies
-          REPO: flecs-public-dummy
-          TAG: ${{ inputs.env_public_version }}
-        run: |
-          for i in {1..10}; do
-            echo "Checking if release $TAG exists"
-            RELEASE_EXISTS=$(gh api repos/$OWNER/$REPO/releases --jq ".[] | select(.tag_name == \"$TAG\") | .id")
-            if [ "$RELEASE_EXISTS" -gt 0 ]; then
-              echo "Release $TAG found!"
-              exit 0
-            fi
-            echo "Release not found, retrying in 5s"
-            sleep 5
-          done
-          echo "Timed out waiting for release $TAG."
-          exit 1
-      - name: Simulate timeout
-        if: inputs.should_timeout == 'true'
-        run: |
-          echo "Simulating timeout..."
-          while true; do
-            echo "Hanging indefinitely..."
-            sleep 60
-          done
-      - name: Simulate failure
-        if: inputs.should_fail == 'true'
-        run: |
-          echo "Simulating failure..."
-          exit 1
+      - name: Fake build job two
+        run: echo "This is just a test for public dummy"
