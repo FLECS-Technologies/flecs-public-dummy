@@ -6,7 +6,7 @@
         "${workspaceFolder}"
       ],
       "defines": [
-        "FLECS_VERSION=\"4.0.0-snowhare\"",
+        "FLECS_VERSION=\"4.0.0-snowhare-next\"",
         "FLECS_API_VERSION=\"2.1.0\""
       ]
     }

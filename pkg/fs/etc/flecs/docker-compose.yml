@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   flecsd:
-    image: flecs/flecs-slim:4.0.0-snowhare-dev
+    image: flecs/flecs-slim:4.0.0-snowhare-next-dev
 
   webapp:
-    image: flecs/webapp:4.0.0-snowhare-dev
+    image: flecs/webapp:4.0.0-snowhare-next-dev
